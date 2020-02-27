@@ -13,7 +13,7 @@ import play_scraper as pl
 
 ###variable###
 visited_links = set()
-dataset = pd.DataFrame()
+dataset = []
 
 
 ###analisys###
@@ -22,14 +22,16 @@ def analisys(tree):
 
 
 def get_store_infos(id):
-    dataset.appens(pl.details(id))
-
+    global dataset
+    dataset.append(pl.details(id))
+    print("YES")
 
 
 
 ###get_links###
 def get_links(tree):
     return_list = []
+    global visited_links
     # This will get the anchor tags <a href...>
     refs = tree.xpath("//a")
     # Get the url from the ref
@@ -39,6 +41,7 @@ def get_links(tree):
         if  "/apps/details?id=" in str and str not in visited_links:
                 return_list.append(str)
                 visited_links.add(str)
+                get_store_infos(str.split("?id=")[1])
         str = ""
     return return_list
 
@@ -48,7 +51,7 @@ def get_links(tree):
 ###explore method###
 
 def explore(init):
-
+    global dataset
     # Set explicit HTMLParser
     parser = etree.HTMLParser()
 
@@ -63,6 +66,9 @@ def explore(init):
         print("Exploring: ",page_link)
         page = requests.get(page_link)
 
+        if len(dataset) > 100:
+            df = pd.DataFrame(dataset)
+            df.to_csv("/home/flavio/Scrivania/info.csv")
 
         # Decode the page content from bytes to string
         html = page.content.decode("utf-8")
