@@ -51,7 +51,10 @@ def get_links(tree):
     links = [link.get('href', '') for link in refs]
 
     for l in links:
+
         if len(apps_info_dataset)%TO_CSV_NUMBER == 0:
+
+        if len(apps_info_dataset)%10 == 0:
             with open(CSV_APP_PRIVACY_NAME, "w") as f:
                 writer = csv.writer(f)
                 writer.writerows(apps_privacy_dataset)
