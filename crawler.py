@@ -54,10 +54,10 @@ def get_links(tree):
 
         if len(apps_info_dataset)%TO_CSV_NUMBER == 0:
 
-        if len(apps_info_dataset)%10 == 0:
-            with open(CSV_APP_PRIVACY_NAME, "w") as f:
-                writer = csv.writer(f)
-                writer.writerows(apps_privacy_dataset)
+            if len(apps_info_dataset)%10 == 0:
+                with open(CSV_APP_PRIVACY_NAME, "w") as f:
+                    writer = csv.writer(f)
+                    writer.writerows(apps_privacy_dataset)
         str = "https://play.google.com"+l
         if  "/apps/details?id=" in str and str not in visited_links:
                 return_list.append(str)
