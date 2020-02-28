@@ -1,5 +1,6 @@
 ###############################################################
 ## Python crawler 1.0 for google play for data extraction    ##
+## Flavio Giorgi                                             ##
 ###############################################################
 
 ###import statement##
@@ -17,7 +18,7 @@ import csv
 CSV_APP_PRIVACY_NAME = "apps_privacy_dataset.csv"
 TO_CSV_NUMBER = 10
 QUEUE_MAX_SIZE = 10000
-START_POINT = "https://play.google.com/store/apps/category/GAME"
+STARTING_POINT = "https://play.google.com/store/apps/category/GAME"
 visited_links = set()
 apps_info_dataset = []
 apps_privacy_dataset = []
@@ -35,7 +36,7 @@ def get_store_infos(id,str):
     regular_expression = re.compile("(<li class=\"BCMWSd\"><span>|</span></li>)")
     privacy_elements_list = [re.sub(regular_expression,"",element.get_attribute("outerHTML")) for element in privacy_elements]
     info = pl.details(id)
-    apps_privacy_dataset.append([info.get('app_id'),privacy_elements_list,info.get('price')])
+    apps_privacy_dataset.append([info.get('app_id'),privacy_elements_list,info.get('price'),info.get("iap"),info.get("iap_range")])
 
 
 
@@ -51,18 +52,15 @@ def get_links(tree):
     links = [link.get('href', '') for link in refs]
 
     for l in links:
-
-        if len(apps_info_dataset)%TO_CSV_NUMBER == 0:
-
-            if len(apps_info_dataset)%10 == 0:
+        str = "https://play.google.com"+l
+        if  "/apps/details?id=" in str and str not in visited_links:
+            if len(apps_privacy_dataset)%TO_CSV_NUMBER == 0:
                 with open(CSV_APP_PRIVACY_NAME, "w") as f:
                     writer = csv.writer(f)
                     writer.writerows(apps_privacy_dataset)
-        str = "https://play.google.com"+l
-        if  "/apps/details?id=" in str and str not in visited_links:
-                return_list.append(str)
-                visited_links.add(str)
-                get_store_infos(str.split("?id=")[1],str)
+            return_list.append(str)
+            visited_links.add(str)
+            get_store_infos(str.split("?id=")[1],str)
         str = ""
     return return_list
 
@@ -98,4 +96,4 @@ def explore(init):
 
 
 # Example call
-explore(START_POINT)
+explore(STARTING_POINT)
