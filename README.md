@@ -2,7 +2,7 @@
 
 
 This crawler is designed to explore google playstore and retrive useful information
-about apps.
+about apps. Moreover, **it can retrive also privacy permission used from each apps**.
 
 ## Required packages
 ```
