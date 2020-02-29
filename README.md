@@ -4,9 +4,12 @@
 This crawler is designed to explore google playstore and retrive useful information
 about apps.
 
-
-It needs selenium, xlml, play_scraper.
-
+## Required packages
+```
+pip install selenium
+pip install xlml
+pip install play_scraper
+```
 ## KNOWLEDGE
 
 Dataset headline: [APP_ID,PERMISSION,PRICE,IN-APP_PURCHASE, IN-APP_PURCHASE_PRICE_RANGE]
