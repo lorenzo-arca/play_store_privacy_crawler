@@ -12,7 +12,6 @@ import play_scraper as pl
 from selenium import webdriver
 import regex as re
 import csv
-import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
