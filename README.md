@@ -1,14 +1,29 @@
-# personal
+# Play_store Crawler
 
-This repo contains a python crawler, this is my first try to use github and atom
 
 This crawler is designed to explore google playstore and retrive useful information
-about app.
+about apps.
 
+
+It needs selenium, xlml, play_scraper.
+
+## KNOWLEDGE
 
 Dataset headline: [APP_ID,PERMISSION,PRICE,IN-APP_PURCHASE, IN-APP_PURCHASE_PRICE_RANGE]
 
+The code below allows to set:
+- name
+- save threshold
+- queue max size
+- maximum number of explored links before ram cleaning
 
-In order to run multiple instances, you should change the values of:
-      - CSV_APP_PRIVACY_NAME
-      - STARTING_POINT
+```python3
+self.CSV_APP_PRIVACY_NAME = csv_name
+self.TO_CSV_NUMBER = 10
+self.QUEUE_MAX_SIZE = 10000
+self.MAX_LINKS = 150
+```
+## How does it works?
+
+The crawler is based on BFS search. It starts the search from a single strarting point (if it's executed as a single process) or from a multiple starting points. In order to occupy a reasonable amount of RAM the crawler allows to visit only a predefined amount of links before it clean up the current session and starts another.
+The program appends information obtained into a csv file and then clean them up.
