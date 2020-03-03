@@ -80,7 +80,7 @@ class crawler():
         link_queue.put(init)
 
         while not link_queue.empty():
-            if (self.restart_links_number>self.MAX_LINKS) ==0:
+            if (self.restart_links_number>self.MAX_LINKS):
                     self.driver.quit()
                     self.driver = webdriver.Firefox()
                     self.restart_links_number = 0
