@@ -15,9 +15,10 @@ import csv
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from multiprocessing import Process
+import threading as td
 
-list = ["https://play.google.com/store/apps/details?id=com.gramgames.mergedragons&hl=en"]
+list = ["https://play.google.com/store/apps/details?id=com.gramgames.mergedragons&hl=en"
+,"https://play.google.com/store/apps/details?id=com.gramgames.mergedragons&hl=en"]
 
 class crawler():
 
@@ -96,6 +97,6 @@ i = 0
 for l in list:
     # Example call
 
-    p = Process(target=crawler(str(i)+".csv").explore, args=(l,))
+    p = td.Thread(target=crawler(str(i)+".csv").explore, args=(l,))
     p.start()
     i+=1
