@@ -16,9 +16,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import threading as td
+import time
 
-list = ["https://play.google.com/store/apps/details?id=com.gramgames.mergedragons&hl=en"
-,"https://play.google.com/store/apps/details?id=com.gramgames.mergedragons&hl=en"]
+list = ["https://play.google.com/store/apps"
+,"https://play.google.com/store/apps/category/GAME",
+"https://play.google.com/store/apps/category/FAMILY"]
+visited_links = set()
+c = td.Condition()
+WAIT_CYCLE = 1500
+
 
 class crawler():
 
@@ -27,21 +33,29 @@ class crawler():
         self.CSV_APP_PRIVACY_NAME = csv_name
         self.TO_CSV_NUMBER = 10
         self.QUEUE_MAX_SIZE = 10000
-        self.visited_links = set()
+        global visited_links
+        global WAIT_CYCLE
         self.apps_privacy_dataset = []
         self.driver = webdriver.Firefox()
         self.restart_links_number = 0
-        self.MAX_LINKS = 150
+        self.MAX_LINKS = 100
 
     ###get_store_infos###
     def get_store_infos(self,id,str):
+        info = pl.details(id)
         temp_page = self.driver.get(str)
-        privacy_page = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, "//a[@jsname='Hly47e']")))
+        privacy_page = WebDriverWait(self.driver, 1000).until(EC.presence_of_element_located((By.XPATH, "//a[@jsname='Hly47e']")))
         privacy_page.click()
+        privacy_elements = []
         privacy_elements = self.driver.find_elements_by_xpath("//li[@class='BCMWSd']")
+        i = 0
+        while privacy_elements == [] and i < WAIT_CYCLE:
+            time.sleep(0.005)
+            privacy_elements = self.driver.find_elements_by_xpath("//li[@class='BCMWSd']")
+            i+=1
         regular_expression = re.compile("(<li class=\"BCMWSd\"><span>|</span></li>)")
         privacy_elements_list = [re.sub(regular_expression,"",element.get_attribute("outerHTML")) for element in privacy_elements]
-        info = pl.details(id)
+
         self.apps_privacy_dataset.append([info.get('app_id'),privacy_elements_list,info.get('price'),info.get("iap"),info.get("iap_range")])
 
 
@@ -57,16 +71,22 @@ class crawler():
         for l in links:
 
             str = "https://play.google.com"+l
-            if  "/apps/details?id=" in str and str not in self.visited_links:
+            c.acquire()
+            if  "/apps/details?id=" in str and str not in visited_links:
                 if len(self.apps_privacy_dataset)%self.TO_CSV_NUMBER == 0:
                     with open(self.CSV_APP_PRIVACY_NAME, "a") as f:
                         writer = csv.writer(f)
                         writer.writerows(self.apps_privacy_dataset)
                         self.apps_privacy_dataset = []
                 return_list.append(str)
-                self.visited_links.add(str)
+                visited_links.add(str)
+                c.notify_all()
+                c.release()
                 self.restart_links_number +=1
                 self.get_store_infos(str.split("?id=")[1],str)
+            else:
+                c.notify_all()
+                c.release()
             str = ""
         return return_list
 
@@ -89,10 +109,11 @@ class crawler():
             page_link = link_queue.get()
             print("Exploring: ",page_link)
             page = requests.get(page_link)
+            if page.status_code != 200: continue
             html = page.content.decode("utf-8")
             tree = etree.parse(StringIO(html), parser=parser)
             [link_queue.put(l) for l in self.get_links(tree)]
-
+        print("Empty QUEUE")
 i = 0
 for l in list:
     # Example call
