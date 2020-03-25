@@ -29,11 +29,8 @@ n_threads = 3
 csv_filename = "excel_names"
 
 # Directories
-mac_dir = "/Users/Lorenzo-Mac/Dropbox/App market - the value of privacy/Scraper/play_store_privacy_crawler/Dataset"
-deca_dir = r"C:\Users\Arca\Dropbox\App market - the value of privacy\Scraper\play_store_privacy_crawler\Dataset"
-win_dir = r"C:\Users\LORENZO\Dropbox\App market - the value of privacy\Scraper\play_store_privacy_crawler\Dataset"
-
-out_dir = mac_dir #deca_dir
+github_dir = "/Users/Lorenzo-Mac/Dropbox/App market - the value of privacy/Scraper/play_store_privacy_crawler/Dataset"
+out_dir = github_dir
 
 ###############################################################################
 ######                   Retrive categories names                        ######
