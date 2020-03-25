@@ -32,6 +32,9 @@ csv_filename = "excel_names"
 github_dir = "/Users/Lorenzo-Mac/Dropbox/App market - the value of privacy/Scraper/play_store_privacy_crawler/Dataset"
 out_dir = github_dir 
 
+if not os.path.exists(out_dir):
+    os.makedirs(out_dir)
+
 ###############################################################################
 ######                import previously founded apps                     ######
 ###############################################################################
