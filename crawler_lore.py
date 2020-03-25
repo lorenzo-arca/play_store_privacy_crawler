@@ -31,7 +31,7 @@ csv_filename = "excel_names"
 # Directories
 github_dir = "/Users/Lorenzo-Mac/Dropbox/App market - the value of privacy/Scraper/play_store_privacy_crawler/Dataset"
 github_windir = "C:/Users/LORENZO/Documents/GitHub/play_store_privacy_crawler/Dataset"
-out_dir = github_dir 
+out_dir = github_windir 
 
 if not os.path.exists(out_dir):
     os.makedirs(out_dir)
