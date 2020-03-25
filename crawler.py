@@ -23,7 +23,7 @@ list = ["https://play.google.com/store/apps"
 "https://play.google.com/store/apps/category/FAMILY"]
 visited_links = set()
 c = td.Condition()
-WAIT_CYCLE = 1500
+WAIT_CYCLE = 3000
 
 
 class crawler():
@@ -106,13 +106,16 @@ class crawler():
                     self.driver = webdriver.Firefox()
                     self.restart_links_number = 0
             print("QUEUE_SIZE :", link_queue.qsize())
+            print("visited links:", len(visited_links))
             page_link = link_queue.get()
             print("Exploring: ",page_link)
             page = requests.get(page_link)
-            if page.status_code != 200: continue
-            html = page.content.decode("utf-8")
-            tree = etree.parse(StringIO(html), parser=parser)
-            [link_queue.put(l) for l in self.get_links(tree)]
+            if page.status_code == 200:
+                html = page.content.decode("utf-8")
+                tree = etree.parse(StringIO(html), parser=parser)
+                [link_queue.put(l) for l in self.get_links(tree)]
+            else:
+                print("Page skipped")
         print("Empty QUEUE")
 i = 0
 for l in list:
