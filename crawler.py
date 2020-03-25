@@ -19,7 +19,7 @@ import threading as td
 import time
 
 list = ["https://play.google.com/store/apps"
-,"https://play.google.com/store/apps/category/GAME",
+,"https://play.google.com/store/apps/details?id=com.squareup.apos.beta",
 "https://play.google.com/store/apps/category/FAMILY"]
 visited_links = set()
 c = td.Condition()
@@ -44,7 +44,10 @@ class crawler():
     def get_store_infos(self,id,str):
         info = pl.details(id)
         temp_page = self.driver.get(str)
-        privacy_page = WebDriverWait(self.driver, 1000).until(EC.presence_of_element_located((By.XPATH, "//a[@jsname='Hly47e']")))
+        try:
+            privacy_page = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[@jsname='Hly47e']")))
+        except Exception:
+            return None
         privacy_page.click()
         privacy_elements = []
         privacy_elements = self.driver.find_elements_by_xpath("//li[@class='BCMWSd']")
@@ -55,7 +58,6 @@ class crawler():
             i+=1
         regular_expression = re.compile("(<li class=\"BCMWSd\"><span>|</span></li>)")
         privacy_elements_list = [re.sub(regular_expression,"",element.get_attribute("outerHTML")) for element in privacy_elements]
-
         self.apps_privacy_dataset.append([info.get('app_id'),privacy_elements_list,info.get('price'),info.get("iap"),info.get("iap_range")])
 
 
