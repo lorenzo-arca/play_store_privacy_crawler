@@ -30,6 +30,7 @@ csv_filename = "excel_names"
 
 # Directories
 github_dir = "/Users/Lorenzo-Mac/Dropbox/App market - the value of privacy/Scraper/play_store_privacy_crawler/Dataset"
+github_windir = "C:/Users/LORENZO/Documents/GitHub/play_store_privacy_crawler/Dataset"
 out_dir = github_dir 
 
 if not os.path.exists(out_dir):
@@ -76,14 +77,12 @@ except:
         categories.append(x['href'].split('category/',1)[1])
 
     category_clean = [search_url + '/category/' + x for x in categories if "GAME" not in x and "FAMILY" not in x]
-    selected_categories = random.sample(category_clean, n_threads - 2)
+    selected_categories = random.sample(category_clean, n_threads - 2) + ["https://play.google.com/store/apps/category/GAME", "https://play.google.com/store/apps/category/FAMILY"]
+
     print("No previously downloaded apps founded")
 
 
-# list = selected categories   
-list = ["https://play.google.com/store/apps"
-,"https://play.google.com/store/apps/category/GAME",
-"https://play.google.com/store/apps/category/FAMILY"]
+list = selected_categories
 visited_links = set()
 c = td.Condition()
 WAIT_CYCLE = 1500
@@ -177,15 +176,16 @@ class crawler():
             tree = etree.parse(StringIO(html), parser=parser)
             [link_queue.put(l) for l in self.get_links(tree)]
         print("Empty QUEUE")
+
 i = 0
 name_list = []
 for l in list:
     # Example call
-
     p = td.Thread(target=crawler(str(i)+".csv").explore, args=(l,))
     p.start()
     name_list.append(str(i)+'.csv')
     i+=1
+
 
 ## Save the list obtained          
 with open(csv_filename + ".txt", "wb") as fp:
